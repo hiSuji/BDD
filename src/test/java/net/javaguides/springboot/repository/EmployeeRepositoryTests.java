@@ -70,5 +70,24 @@ public class EmployeeRepositoryTests {
         assertThat(employeeList.size()).isEqualTo(3);
     }
 
+    // Junit test for get employee by id operation
+    @Test
+    public void givenEmployeeObject_whenFindByID_thenReturnEmployeeObject() {
+        // given - precondition or setup
+        Employee employee = Employee.builder()
+                .firstName("orange")
+                .lastName("lemon")
+                .email("orange@lemon.com")
+                .build();
+
+        employeeRepository.save(employee);
+        // when - action or the behaviour that we are going test
+
+        // The get() method of java.util.Optional class in Java is used to get the value of this Optional instance.
+        // If there is no value present in this Optional instance, then this method throws NullPointerException.
+        Employee employeeDB = employeeRepository.findById(employee.getId()).get();
+        // then - verify the output
+        assertThat(employeeDB).isNotNull();
+    }
 
 }
