@@ -191,4 +191,44 @@ public class EmployeeRepositoryTests {
         // then - verify the output
         assertThat(savedEmployee).isNotNull();
     }
+
+    // Junit test for custom query using native SQL with index
+    @DisplayName("Junit test for custom query using native SQL with index")
+    @Test
+    public void givenFirstNameAndLastName_whenFindByNativeSQL_thenReturnEmployeeObject() {
+        // given - precondition or setup
+        Employee employeeDB = Employee.builder()
+                .firstName("one")
+                .lastName("two")
+                .email("one@number.com")
+                .build();
+
+        employeeRepository.save(employeeDB);
+        // when - action or the behaviour that we are going test
+        Employee savedEmployee = employeeRepository.findByNativeSQL(employeeDB.getFirstName(), employeeDB.getLastName());
+
+
+        // then - verify the output
+        assertThat(savedEmployee).isNotNull();
+    }
+
+    // Junit test for custom query using native SQL with Named params
+    @DisplayName("Junit test for custom query using native SQL with Named params")
+    @Test
+    public void givenFirstNameAndLastName_whenFindByNativeSQLNamed_thenReturnEmployeeObject() {
+        // given - precondition or setup
+        Employee employeeDB = Employee.builder()
+                .firstName("one")
+                .lastName("two")
+                .email("one@number.com")
+                .build();
+
+        employeeRepository.save(employeeDB);
+        // when - action or the behaviour that we are going test
+        Employee savedEmployee = employeeRepository.findByNativeSQLNamed(employeeDB.getFirstName(), employeeDB.getLastName());
+
+
+        // then - verify the output
+        assertThat(savedEmployee).isNotNull();
+    }
 }
