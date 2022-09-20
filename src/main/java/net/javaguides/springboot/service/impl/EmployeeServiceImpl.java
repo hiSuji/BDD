@@ -14,8 +14,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
 
-    @Autowired
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+    // we have created the EmployeeServiceImpl constructor with EmployeeRepository as an argument
+    // @Autowired 생략 - 단일 생성자인 경우 @Autowired 어노테이션 사용할 필요 없다. (종속성을 자동으로 감지하고 주입)
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository) { // 생성자 기반 종속성 주입 사용
         this.employeeRepository = employeeRepository;
     }
 
