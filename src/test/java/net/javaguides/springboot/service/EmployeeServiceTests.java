@@ -1,5 +1,6 @@
 package net.javaguides.springboot.service;
 
+import net.javaguides.springboot.exception.ResourceNotFoundException;
 import net.javaguides.springboot.model.Employee;
 import net.javaguides.springboot.repository.EmployeeRepository;
 import net.javaguides.springboot.service.impl.EmployeeServiceImpl;
@@ -69,5 +70,34 @@ public class EmployeeServiceTests {
 
         // then - verify the output
         Assertions.assertThat(savedEmployee).isNotNull();
+    }
+
+    // Junit test for saveEmployee method
+    // ResourceNotFoundException 발생시키는 saveEmployee() 테스트
+    @DisplayName("Junit test for saveEmployee method which throws exception")
+    @Test
+    public void givenExistingEmail_whenSaveEmployee_thenThrowsException() {
+        // given - precondition or setup
+        //saveEmployee() 메서드 > findByEmail 테스트
+        //willReturn() 반환하는 값
+        given(employeeRepository.findByEmail(employee.getEmail())).willReturn(Optional.of(employee)); // Returns an Optional describing the given non-null value.
+        //saveEmployee() 메서드 > save() 테스트
+//        given(employeeRepository.save(employee)).willReturn(employee);
+
+        System.out.println(employeeRepository);
+        System.out.println(employeeService);
+
+        // when - action or the behaviour that we are going test
+        // assertThrows : 첫번째 인자로 발생할 예외 클래스의 Class 타입을 받는다. executable을 실행하여 예외가 발생할 경우 Class 타입과 발생된 Exception이 같은타입인지 확인
+        org.junit.jupiter.api.Assertions.assertThrows(ResourceNotFoundException.class, () -> employeeService.saveEmployee(employee));
+//        Employee savedEmployee = employeeService.saveEmployee(employee);
+//
+//        System.out.println(savedEmployee);
+
+        // then - verify the output
+//        Assertions.assertThat(savedEmployee).isNotNull();
+        verify(employeeRepository, never()).save(any(Employee.class)); // return employeeRepository.save(employee) 로직 호출 여부 검증
+        // verify(mock).method(param); - 해당 Mock Object의 메소드를 호출했는지 검증
+        // verify(mock, never()).method(param); - 해당 Mock Object의 메소드가 호출이 안됬는지 검증
     }
 }
