@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -99,5 +100,27 @@ public class EmployeeServiceTests {
         verify(employeeRepository, never()).save(any(Employee.class)); // return employeeRepository.save(employee) 로직 호출 여부 검증
         // verify(mock).method(param); - 해당 Mock Object의 메소드를 호출했는지 검증
         // verify(mock, never()).method(param); - 해당 Mock Object의 메소드가 호출이 안됬는지 검증
+    }
+
+    // Junit test for getAllEmployees method
+    @DisplayName("Junit test for getAllEmployees method")
+    @Test
+    public void givenEmployeesList_whenGetAllEmployees_thenReturnEmployeesList() {
+        // given - precondition or setup
+        Employee employee1 = Employee.builder()
+                .id(2L)
+                .firstName("Chris")
+                .lastName("Evans")
+                .email("ChrisEvans@gmail.com")
+                .build();
+
+        given(employeeRepository.findAll()).willReturn(List.of(employee, employee1));
+
+        // when - action or the behaviour that we are going test
+        List<Employee> employeeList = employeeService.getAllEmployees();
+
+        // then - verify the output
+        Assertions.assertThat(employeeList).isNotNull();
+        Assertions.assertThat(employeeList.size()).isEqualTo(2);
     }
 }
