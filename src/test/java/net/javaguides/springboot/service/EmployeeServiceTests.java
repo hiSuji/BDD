@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -114,7 +115,7 @@ public class EmployeeServiceTests {
                 .email("ChrisEvans@gmail.com")
                 .build();
 
-        given(employeeRepository.findAll()).willReturn(List.of(employee, employee1));
+        given(employeeRepository.findAll()).willReturn(List.of(employee, employee1)); // List.of() - Returns an unmodifiable list
 
         // when - action or the behaviour that we are going test
         List<Employee> employeeList = employeeService.getAllEmployees();
@@ -122,5 +123,26 @@ public class EmployeeServiceTests {
         // then - verify the output
         Assertions.assertThat(employeeList).isNotNull();
         Assertions.assertThat(employeeList.size()).isEqualTo(2);
+    }
+
+    // Junit test for getAllEmployees method
+    @DisplayName("Junit test for getAllEmployees method (negative scenario")
+    @Test
+    public void givenEmptyEmployeesList_whenGetAllEmployees_thenReturnEmptyEmployeesList() {
+        // given - precondition or setup
+        Employee employee1 = Employee.builder()
+                .id(2L)
+                .firstName("Chris")
+                .lastName("Evans")
+                .email("ChrisEvans@gmail.com")
+                .build();
+
+        given(employeeRepository.findAll()).willReturn(Collections.emptyList()); // List.of() - Returns an unmodifiable list
+
+        // when - action or the behaviour that we are going test
+        List<Employee> employeeList = employeeService.getAllEmployees();
+
+        // then - verify the output
+        Assertions.assertThat(employeeList).isEmpty();
     }
 }
