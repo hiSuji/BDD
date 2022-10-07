@@ -4,7 +4,7 @@ import net.javaguides.springboot.exception.ResourceNotFoundException;
 import net.javaguides.springboot.model.Employee;
 import net.javaguides.springboot.repository.EmployeeRepository;
 import net.javaguides.springboot.service.impl.EmployeeServiceImpl;
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.BDDMockito.given;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
@@ -71,7 +70,7 @@ public class EmployeeServiceTests {
         System.out.println(savedEmployee);
 
         // then - verify the output
-        Assertions.assertThat(savedEmployee).isNotNull();
+        assertThat(savedEmployee).isNotNull();
     }
 
     // Junit test for saveEmployee method
@@ -121,8 +120,8 @@ public class EmployeeServiceTests {
         List<Employee> employeeList = employeeService.getAllEmployees();
 
         // then - verify the output
-        Assertions.assertThat(employeeList).isNotNull();
-        Assertions.assertThat(employeeList.size()).isEqualTo(2);
+        assertThat(employeeList).isNotNull();
+        assertThat(employeeList.size()).isEqualTo(2);
     }
 
     // Junit test for getAllEmployees method
@@ -143,6 +142,20 @@ public class EmployeeServiceTests {
         List<Employee> employeeList = employeeService.getAllEmployees();
 
         // then - verify the output
-        Assertions.assertThat(employeeList).isEmpty();
+        assertThat(employeeList).isEmpty();
+    }
+
+    // Junit test for getEmployeeById method
+    @DisplayName("Junit test for getEmployeeById method")
+    @Test
+    public void givenEmployeeId_whenGetEmployeeById_thenReturnEmployeeObject() {
+        // given - precondition or setup
+        given(employeeRepository.findById(1L)).willReturn(Optional.of(employee));
+
+        // when - action or the behaviour that we are going test
+        Employee savedEmployee = employeeService.getEmployeeById(employee.getId()).get();
+
+        // then - verify the output
+        assertThat(savedEmployee).isNotNull();
     }
 }
