@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class) // 주석 없으면 NullPointerException 발생 :  테스트 클래스가 Mockito를 사용한다는 것을 알림
 public class EmployeeServiceTests {
@@ -162,7 +163,7 @@ public class EmployeeServiceTests {
     // Junit test for updateEmployee method
     @DisplayName("Junit test for updateEmployee method")
     @Test
-    public void givenEmployeeObject_whenUpdateEmployee_thenRetrunUpdatedEmployee() {
+    public void givenEmployeeObject_whenUpdateEmployee_thenReturnUpdatedEmployee() {
         // given - precondition or setup
         given(employeeRepository.save(employee)).willReturn(employee);
         employee.setEmail("apple@gmail.com");
@@ -174,5 +175,23 @@ public class EmployeeServiceTests {
         // then - verify the output
         assertThat(updatedEmployee.getEmail()).isEqualTo("apple@gmail.com");
         assertThat(updatedEmployee.getFirstName()).isEqualTo("banana");
+    }
+
+    // Junit test for deleteEmployee method
+    @DisplayName("Junit test for deleteEmployee method")
+    @Test
+    public void givenEmployeeId_whenDeleteEmployee_thenNothing() {
+        // given - precondition or setup
+        // willDoNothing() : the mock will not return anything
+        long employeeId = 1L;
+        willDoNothing().given(employeeRepository).deleteById(employeeId);
+
+        // when - action or the behaviour that we are going test
+        employeeService.deleteEmployee(employeeId);
+
+        // then - verify the output
+        // verify() : Mockito verify() method can be used to test number of method invocations(=메서드 호출 수)
+        // return 값이 없기 때문에 메서드 호출 수 확인
+        verify(employeeRepository, times(1)).deleteById(employeeId); // 1번 호출되었는지 검증
     }
 }
