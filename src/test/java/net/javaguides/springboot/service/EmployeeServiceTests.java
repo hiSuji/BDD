@@ -154,8 +154,7 @@ public class EmployeeServiceTests {
         given(employeeRepository.findById(1L)).willReturn(Optional.of(employee));
 
         // when - action or the behaviour that we are going test
-        Employee savedEmployee = employeeService.getEmployeeById(employee.getId()).get();
-
+        Employee savedEmployee = employeeService.getEmployeeById(employee.getId()).orElse(null); // Returns the value if present, otherwise returns null
         // then - verify the output
         assertThat(savedEmployee).isNotNull();
     }
