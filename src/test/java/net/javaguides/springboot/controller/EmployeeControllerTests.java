@@ -16,6 +16,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 // @WebMvcTest annotation will load only the spring beans that are required to test the controller.
@@ -44,6 +47,7 @@ public class EmployeeControllerTests {
 
         // ArgumentMatchers : Allows creating customized argument matchers.
         // any() → Matches anything (null values)
+        // willAnswer : 매개 변수 사용 반환 값 결정
         given(employeeService.saveEmployee(ArgumentMatchers.any(Employee.class)))
                 .willAnswer((invocation) -> invocation.getArgument(0)); // in this case we only have one parameter, it is on place 0
 
@@ -60,5 +64,25 @@ public class EmployeeControllerTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.lastName", CoreMatchers.is(employee.getLastName())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email", CoreMatchers.is(employee.getEmail())));
 
+    }
+
+    // Junit test for Get All employees REST API
+    @Test
+    public void givenListOfEmployeeObject_whenGetAllEmployees_thenReturnEmployeesList() throws Exception {
+        // given - precondition or setup
+        List<Employee> listOfEmployees = new ArrayList<>();
+        listOfEmployees.add(Employee.builder().firstName("Park").lastName("JiYun").email("parkJiyun@gmail.com").build());
+        listOfEmployees.add(Employee.builder().firstName("Kim").lastName("EnJu").email("kimEnjun@gmail.com").build());
+        // willReturn : 고정 값 반환
+        given(employeeService.getAllEmployees()).willReturn(listOfEmployees);
+
+        // when - action or the behaviour that we are going test
+        ResultActions response = mockMvc.perform(get("/api/employees"));
+
+        // then - verify the output
+        // andExpect() : 응답 검증
+        response.andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size()", CoreMatchers.is(listOfEmployees.size())));
     }
 }
