@@ -3,6 +3,7 @@ package net.javaguides.springboot.controller;
 import net.javaguides.springboot.model.Employee;
 import net.javaguides.springboot.service.EmployeeService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,4 +34,10 @@ public class EmployeeController {
 
     @GetMapping
     public List<Employee> getAllEmployees() { return employeeService.getAllEmployees(); }
+    @GetMapping("{id}")
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable("id") long employeeId) {
+        return employeeService.getEmployeeById(employeeId)
+                .map(ResponseEntity::ok) // Optional 객체의 값이 있다면, map() 함수를 통해 값의 형태를 변경한다.
+                .orElseGet(() -> ResponseEntity.notFound().build()); // Optional 객체의 값이 없다면, 인수로 전달된 공급자 함수(Supplier)의 결과 값을 반환한다.
+    }
 }
