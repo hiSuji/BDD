@@ -34,7 +34,7 @@ public class EmployeeController {
 
     @GetMapping
     public List<Employee> getAllEmployees() { return employeeService.getAllEmployees(); }
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable("id") long employeeId) {
         return employeeService.getEmployeeById(employeeId)
                 .map(ResponseEntity::ok) // Optional 객체의 값이 있다면, map() 함수를 통해 값의 형태를 변경한다.
