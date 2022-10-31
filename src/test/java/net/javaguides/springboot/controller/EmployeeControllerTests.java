@@ -169,4 +169,31 @@ public class EmployeeControllerTests {
                 .andExpect(jsonPath("$.lastName", is(updatedEmployee.getLastName())))
                 .andExpect(jsonPath("$.email", is(updatedEmployee.getEmail())));
     }
+
+    // negative scenario
+    // Junit test for update employee REST API
+    @Test
+    public void givenUpdatedEmployee_whenUpdateEmployee_thenReturn404() throws Exception {
+        // given - precondition or setup
+        long employeeId = 1L;
+
+        Employee updatedEmployee = Employee.builder()
+                .firstName("Yellow")
+                .lastName("color")
+                .email("yellow@gmail.com")
+                .build();
+
+        given(employeeService.getEmployeeById(employeeId)).willReturn(Optional.empty()); // db에 있는 데이터를 가져오는 것으로 가장
+        given(employeeService.updateEmployee(any(Employee.class)))
+                .willAnswer((invocation) -> invocation.getArgument(0));
+
+        // when - action or the behaviour that we are going test
+        ResultActions response = mockMvc.perform(put("/api/employees/{id}", employeeId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updatedEmployee))); // writeValueAsString : java Object -> JSON 변환
+
+        // then - verify the output
+        response.andDo(print())
+                .andExpect(status().isNotFound());
+    }
 }
