@@ -48,9 +48,16 @@ public class EmployeeController {
                     savedEmployee.setFirstName(employee.getFirstName());
                     savedEmployee.setLastName(employee.getLastName());
                     savedEmployee.setEmail(employee.getEmail());
-
                     Employee updatedEmployee = employeeService.updateEmployee(savedEmployee);
+
                     return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
                 }).orElseGet(() -> ResponseEntity.notFound().build()); // orElseGet() : 해당 값이 null인 경우에만 실행
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> deleteEmployee(@PathVariable("id") long employeeId) {
+        employeeService.deleteEmployee(employeeId);
+
+        return new ResponseEntity<>("Employee deleted successfully!", HttpStatus.OK);
     }
 }
