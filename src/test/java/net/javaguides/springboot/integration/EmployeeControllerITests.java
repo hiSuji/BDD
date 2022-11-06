@@ -12,7 +12,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -67,5 +71,23 @@ public class EmployeeControllerITests {
                 .andExpect(jsonPath("$.lastName", is(employee.getLastName())))
                 .andExpect(jsonPath("$.email", is(employee.getEmail())));
 
+    }
+
+    @Test
+    public void givenListOfEmployeeObject_whenGetAllEmployees_thenReturnEmployeesList() throws Exception {
+        // given - precondition or setup
+        List<Employee> listOfEmployees = new ArrayList<>();
+        listOfEmployees.add(Employee.builder().firstName("Park").lastName("JiYun").email("parkJiyun@gmail.com").build());
+        listOfEmployees.add(Employee.builder().firstName("Kim").lastName("EnJu").email("kimEnjun@gmail.com").build());
+        employeeRepository.saveAll(listOfEmployees); // 데이터베이스에 레코드 저장
+
+        // when - action or the behaviour that we are going test
+        ResultActions response = mockMvc.perform(get("/api/employees"));
+
+        // then - verify the output
+        // andExpect() : 응답 검증
+        response.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", is(listOfEmployees.size())));
     }
 }
