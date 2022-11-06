@@ -1,12 +1,22 @@
 package net.javaguides.springboot.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.javaguides.springboot.model.Employee;
 import net.javaguides.springboot.repository.EmployeeRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /*
 Integration tests separated from the unit tests.
@@ -33,5 +43,29 @@ public class EmployeeControllerITests {
     @BeforeEach
     void setup() { // clean for each and every test case
         employeeRepository.deleteAll();
+    }
+
+    @Test
+    public void givenEmployeeObject_whenCreateEmployee_thenReturnSavedEmployee() throws Exception {
+        // given - precondition or setup
+        Employee employee = Employee.builder()
+                .firstName("Banana")
+                .lastName("Kim")
+                .email("banana@gmail.com")
+                .build();
+
+        // when - action or the behaviour that we are going test
+        ResultActions response = mockMvc.perform(post("/api/employees") // post REST API 호출
+                .contentType(MediaType.APPLICATION_JSON) // Json type
+                .content(objectMapper.writeValueAsString(employee))); // 본문에 employee JSON 객체 전달 (writeValueAsString : Java 객체에서 JSON 생성하고 생성된 JSON -> 문자열로 반환)
+
+        // then - verify the output
+        // jsonPath - ($ : The root element to query. This starts all path expressions.)
+        response.andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.firstName", is(employee.getFirstName())))
+                .andExpect(jsonPath("$.lastName", is(employee.getLastName())))
+                .andExpect(jsonPath("$.email", is(employee.getEmail())));
+
     }
 }
