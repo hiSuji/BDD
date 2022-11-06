@@ -90,4 +90,49 @@ public class EmployeeControllerITests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()", is(listOfEmployees.size())));
     }
+
+    @Test
+    public void givenEmployeeById_whenGetEmployeeById_thenReturnsEmployee() throws Exception{
+        // given - precondition or setup
+        Employee employee = Employee.builder()
+                .firstName("Banana")
+                .lastName("Kim")
+                .email("banana@gmail.com")
+                .build();
+
+        employeeRepository.save(employee);
+
+        // when - action or the behaviour that we are going test
+        ResultActions response = mockMvc.perform(get("/api/employees/{id}", employee.getId()));
+
+
+        // then - verify the output
+        // $ : root member of a JSON structure whether it is an object or array.
+        response.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName", is(employee.getFirstName())))
+                .andExpect(jsonPath("$.lastName", is(employee.getLastName())))
+                .andExpect(jsonPath("$.email", is(employee.getEmail())));
+    }
+
+    @Test
+    public void givenInvalidEmployeeById_whenGetEmployeeById_thenReturnsEmpty() throws Exception{
+        // given - precondition or setup
+        long employeeId = 1L;
+        Employee employee = Employee.builder()
+                .firstName("Banana")
+                .lastName("Kim")
+                .email("banana@gmail.com")
+                .build();
+        employeeRepository.save(employee);
+
+        // when - action or the behaviour that we are going test
+        ResultActions response = mockMvc.perform(get("/api/employees/{id}", employeeId));
+
+        // then - verify the output
+        // $ : root member of a JSON structure whether it is an object or array.
+        response.andDo(print())
+                .andExpect(status().isNotFound());
+
+    }
 }
