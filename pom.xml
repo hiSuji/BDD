@@ -55,6 +55,27 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers</artifactId>
+			<version>1.17.5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>1.17.5</version>
+			<scope>test</scope>
+		</dependency>
+
+<!--	mysql dependency depends on mysql-connector-java -->
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>mysql</artifactId>
+			<version>1.17.5</version>
+			<scope>test</scope>
+		</dependency>
     </dependencies>
 
 	<build>
